@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI Dev Tycoon - Ultimate Edition</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">🤖 KI DEV TYCOON</div>
+            <div class="time-info">
+                <div class="date" id="dateDisplay">Januar 1956</div>
+                <div class="time-controls">
+                    <button id="pauseBtn" class="time-btn">⏸️</button>
+                    <button id="normalBtn" class="time-btn active">▶️</button>
+                    <button id="fastBtn" class="time-btn">⏩</button>
+                    <button id="ultraFastBtn" class="time-btn">⏭️</button>
+                </div>
+            </div>
+            <div class="resources-bar">
+                <div class="resource">💰 <span id="money">$50,000</span></div>
+                <div class="resource">⭐ <span id="reputation">0</span></div>
+                <div class="resource">⚖️ <span id="ethics">0</span></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="game-container">
+        <div class="lab-view">
+            <canvas id="labCanvas"></canvas>
+            <div class="lab-info">
+                <div class="lab-name" id="labName">🏢 Dein KI Labor</div>
+                <div class="lab-stats">
+                    <span>👥 Team: <span id="teamCount">0</span></span>
+                    <span>🖥️ Compute: <span id="computePower">1 KFLOPS</span></span>
+                    <span>📊 Daten: <span id="dataAmount">100 KB</span></span>
+                </div>
+            </div>
+            <div class="lab-controls">
+                <button id="expandLabBtn" class="lab-control-btn">🏗️ Labor erweitern</button>
+                <button id="upgradeComputeBtn" class="lab-control-btn">🖥️ Compute upgraden</button>
+            </div>
+        </div>
+
+        <div class="ui-panel">
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="dashboard">📊 Übersicht</button>
+                <button class="tab-btn" data-tab="research">🔬 Forschung</button>
+                <button class="tab-btn" data-tab="team">👥 Team</button>
+                <button class="tab-btn" data-tab="products">💼 Produkte</button>
+                <button class="tab-btn" data-tab="finance">💰 Finanzen</button>
+                <button class="tab-btn" data-tab="stats">📊 Statistik</button>
+            </div>
+
+            <div class="tab-content">
+                <div id="dashboardTab" class="tab active">
+                    <h3>📊 Labor Status</h3>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">💵 Finanzen</div>
+                        <div class="stat-row">
+                            <span>Budget:</span>
+                            <span class="value" id="budget">$50,000</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Einnahmen/Monat:</span>
+                            <span class="value positive" id="monthlyIncome">$0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Ausgaben/Monat:</span>
+                            <span class="value negative" id="monthlyExpenses">-$3,000</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Netto/Monat:</span>
+                            <span class="value" id="monthlyNet">-$3,000</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Runway:</span>
+                            <span class="value" id="runway">16 Monate</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">🔬 Aktive Forschung</div>
+                        <div id="activeResearch" class="research-list">
+                            <div class="empty">Keine aktive Forschung</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">💼 Aktive Produkte</div>
+                        <div id="activeProducts" class="product-list">
+                            <div class="empty">Keine Produkte</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">📰 Neuigkeiten</div>
+                        <div id="newsLog" class="news-log"></div>
+                    </div>
+                </div>
+
+                <div id="researchTab" class="tab">
+                    <h3>🔬 Forschungsbaum</h3>
+                    
+                    <div class="research-tracks" id="researchTracks"></div>
+                    
+                    <div class="action-card">
+                        <h4>Neue Forschung starten</h4>
+                        <select id="trackSelect" class="select-input">
+                            <option value="">Bereich wählen...</option>
+                        </select>
+                        <select id="levelSelect" class="select-input">
+                            <option value="">Level wählen...</option>
+                        </select>
+                        <div id="researchInfo" class="info-box"></div>
+                        <button id="startResearchBtn" class="btn-primary" disabled>🚀 Forschung starten</button>
+                    </div>
+                </div>
+
+                <div id="teamTab" class="tab">
+                    <h3>👥 Team Management</h3>
+                    
+                    <div class="team-header-actions">
+                        <button id="hireBtn" class="btn-primary">➕ Mitarbeiter einstellen</button>
+                        <button id="trainingBtn" class="btn-secondary">📚 Team-Training</button>
+                    </div>
+                    
+                    <div id="teamList" class="team-list"></div>
+                </div>
+
+                <div id="productsTab" class="tab">
+                    <h3>💼 Produkte</h3>
+                    
+                    <button id="newProductBtn" class="btn-primary">➕ Neues Produkt entwickeln</button>
+                    
+                    <div class="products-container">
+                        <div class="product-section">
+                            <h4>✅ Aktive Produkte</h4>
+                            <div id="activeProductsList"></div>
+                        </div>
+                        <div class="product-section">
+                            <h4>🔨 In Entwicklung</h4>
+                            <div id="inDevProductsList"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="financeTab" class="tab">
+                    <h3>💰 Finanzverwaltung</h3>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">💵 Übersicht</div>
+                        <div class="stat-row large">
+                            <span>Kontostand:</span>
+                            <span class="value" id="finBalance">$50,000</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Einnahmen/Monat:</span>
+                            <span class="value positive" id="finIncome">$0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Ausgaben/Monat:</span>
+                            <span class="value negative" id="finExpenses">-$3,000</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Netto/Monat:</span>
+                            <span class="value" id="finNet">-$3,000</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">📊 Ausgaben Detail</div>
+                        <div class="stat-row">
+                            <span>👥 Gehälter:</span>
+                            <span class="value" id="expSalaries">$0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>🖥️ Compute:</span>
+                            <span class="value" id="expCompute">$500</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>🏢 Büro/Miete:</span>
+                            <span class="value" id="expOffice">$2,000</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>📊 Daten:</span>
+                            <span class="value" id="expData">$0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>💡 F&E:</span>
+                            <span class="value" id="expRnD">$500</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">💵 Einnahmen Detail</div>
+                        <div class="stat-row">
+                            <span>💼 Produkte:</span>
+                            <span class="value" id="incProducts">$0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>🎓 Grants:</span>
+                            <span class="value" id="incGrants">$0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>💼 Consulting:</span>
+                            <span class="value" id="incConsulting">$0</span>
+                        </div>
+                    </div>
+
+                    <div class="action-card">
+                        <h4>💸 Finanzierungsoptionen</h4>
+                        <button id="grantBtn" class="btn-secondary">🎓 Grant beantragen</button>
+                        <button id="vcBtn" class="btn-secondary">💰 VC-Funding suchen</button>
+                        <button id="loanBtn" class="btn-secondary">🏦 Kredit aufnehmen</button>
+                        <button id="consultingBtn" class="btn-secondary">💼 Consulting anbieten</button>
+                    </div>
+                </div>
+
+                <div id="statsTab" class="tab">
+                    <h3>📊 Statistiken</h3>
+                    
+                    <div class="stat-card">
+                        <div class="stat-header">🏆 Erfolge</div>
+                        <div class="stat-row">
+                            <span>Papers veröffentlicht:</span>
+                            <span class="value" id="statPapers">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Forschung abgeschlossen:</span>
+                            <span class="value" id="statResearch">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Produkte gestartet:</span>
+                            <span class="value" id="statProducts">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Mitarbeiter eingestellt:</span>
+                            <span class="value" id="statHires">0</span>
+                        </div>
+                        <div class="stat-row">
+                            <span>Gesamtumsatz:</span>
+                            <span class="value" id="statRevenue">$0</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">🌍 Weltrangliste</div>
+                        <div id="leaderboard"></div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">📅 Zeitleiste</div>
+                        <div id="timeline"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-actions">
+                <button id="saveBtn" class="btn-small">💾 Speichern</button>
+                <button id="loadBtn" class="btn-small">📁 Laden</button>
+                <button id="newGameBtn" class="btn-small">🔄 Neu</button>
+                <button id="settingsBtn" class="btn-small">⚙️ Einstellungen</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="hireModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h3>👥 Mitarbeiter einstellen</h3>
+            <div id="candidatesList"></div>
+        </div>
+    </div>
+
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h3>💼 Neues Produkt entwickeln</h3>
+            <div id="productForm">
+                <label>Produktname:</label>
+                <input type="text" id="productNameInput" class="text-input" placeholder="z.B. SmartChat AI">
+                <label>Produkt-Typ:</label>
+                <select id="productTypeSelect" class="select-input">
+                    <option value="research">Research Tool</option>
+                    <option value="enterprise">Enterprise Solution</option>
+                    <option value="consumer">Consumer Product</option>
+                    <option value="api">API/Platform</option>
+                </select>
+                <label>Basiert auf Technologie:</label>
+                <select id="productTechSelect" class="select-input"></select>
+                <div id="productInfoBox" class="info-box"></div>
+                <button id="createProductBtn" class="btn-primary">🚀 Entwicklung starten</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="eventModal" class="modal">
+        <div class="modal-content event-modal">
+            <h3 id="eventTitle"></h3>
+            <p id="eventDesc"></p>
+            <div id="eventChoices"></div>
+        </div>
+    </div>
+
+    <div id="ethicsModal" class="modal">
+        <div class="modal-content ethics-modal">
+            <h3 id="ethicsTitle"></h3>
+            <p id="ethicsDesc"></p>
+            <div id="ethicsChoices"></div>
+        </div>
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script src="game.js"></script>
+</body>
+</html>
